@@ -55,7 +55,7 @@ public class HelloWorldController : ControllerBase
 {
     private readonly IHelloMessageService _helloMessageService;
 
-    public HelloWorldController(IHelloMessageService helloMessageService, InstancePerService instancePerService)
+    public HelloWorldController(IHelloMessageService helloMessageService)
     {
         _helloMessageService = helloMessageService;
     }
