@@ -3,6 +3,7 @@ Autofac是一个开源的依赖注入（DI）和控制反转（IoC）容器，�
 #  二、  安装
 打开Rider，打开你的项目。
 ![image.png](https://upload-images.jianshu.io/upload_images/29177961-386a165a8e6db545.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 在NuGet包管理器对话框中，搜索框中输入“Autofac”，在搜索结果中找到“Autofac”包，选择它。
 ![image.png](https://upload-images.jianshu.io/upload_images/29177961-4cc3492ccb287f78.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
