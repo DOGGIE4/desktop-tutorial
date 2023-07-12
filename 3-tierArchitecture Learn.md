@@ -7,7 +7,7 @@
 
 3、数据访问层（DAL）：直接操作数据库，针对数据的增添、删除、修改、更新、查找等。
 
-Controller（表现层）中调用HelloMessageService（业务逻辑层）
+* Controller（表现层）中调用HelloMessageService（业务逻辑层）
 
 ```
     public HelloWorldController(IHelloMessageService helloMessageService)
@@ -24,7 +24,7 @@ Controller（表现层）中调用HelloMessageService（业务逻辑层）
 }
 ```
 
-HelloMessageService（业务逻辑层）调用HelloWorldDataProvider（数据访问层），HelloMessageService继承IHelloMessageService类后，通过构造方法把HelloWorldDataProvider注入到HelloMessageService中，最后实现IHelloMessageService的方法。
+* HelloMessageService（业务逻辑层）调用HelloWorldDataProvider（数据访问层），HelloMessageService继承IHelloMessageService类后，通过构造方法把HelloWorldDataProvider注入到HelloMessageService中，最后实现IHelloMessageService的方法。
 
 ```
 public class HelloMessageService : IHelloMessageService
@@ -43,7 +43,7 @@ public class HelloMessageService : IHelloMessageService
 }
 ```
 
-Provider中，类 HelloWorldDataProvider 实现了接口 IHelloWorldDataProvider，实现了接口中声明的 GetMessage 方法，并返回了一个字符串 "Hi"。
+* Provider中，类 HelloWorldDataProvider 实现了接口 IHelloWorldDataProvider，实现了接口中声明的 GetMessage 方法，并返回了一个字符串 "Hi"。
 
 ```
 public class HelloWorldDataProvider : IHelloWorldDataProvider
