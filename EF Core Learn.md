@@ -1,4 +1,5 @@
 # 一、ORM
+
 ORM 是一种将对象模型和关系型数据库之间的映射关系进行自动化处理的技术。开发人员在使用 ORM 框架时，可以使用面向对象的方式定义实体类，然后通过 ORM 框架将这些实体类映射到数据库中的表和记录，从而实现对数据库的访问和操作。ORM 框架还可以自动生成 SQL 语句，从而简化数据访问的开发工作。
 
 * ORM框架是连接数据库的桥梁，只要提供了持久化类与表的映射关系，ORM框架在运行时就能参照映射文件的信息，把对象持久化到数据库中。
@@ -82,7 +83,6 @@ CREATE TABLE `people`  (
 配置appsettings.json
 
 ```
-"AllowedHosts": "*",
   "ConnectionStrings": {
     "MySQL": "server=localhost;userid=root;password=xxxxx;database=test;"
   }
@@ -120,7 +120,6 @@ Startup.cs注册
             endpoints.MapControllers();
         });
     }
-}
 ```
 
 创一个PeopleController的控制器
@@ -140,22 +139,24 @@ Startup.cs注册
         [HttpGet]
         public IActionResult Create()
         {
-            return Ok(_personService.AddPerson());//调用PersonService中的AddPerson方法
+            //调用PersonService中的AddPerson方法
+            return Ok(_personService.AddPerson());
         }
 
         [HttpGet]
         public IActionResult GetById(int id)
         {
-            return Ok(_personService.GetPersonById(id));//调用PersonService中的GetPersonById方法
+            //调用PersonService中的GetPersonById方法
+            return Ok(_personService.GetPersonById(id));
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(_personService.GetAllPersons());//调用PersonService中的.GetAllPersons方法
+            //调用PersonService中的.GetAllPersons方法
+            return Ok(_personService.GetAllPersons());
         }
     }
-}
 ```
 
 创一个PersonService的业务逻辑层
@@ -197,7 +198,6 @@ Startup.cs注册
             return _personDataProvider.GetPersonById(id);
         }
     }
-}
 ```
 
 创建PersonDataProvider数据访问层
@@ -249,5 +249,4 @@ public abstract class PersonDataProvider : IPersonDataProvider
         //读取所有
         return _dbContext.People.ToList();
     }
-}
 ```
