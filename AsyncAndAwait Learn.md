@@ -69,3 +69,101 @@ async Task DownloadDataAsync()
 
 总之，async 和 await 是 C# 中用于编写异步代码的关键字，可以帮助编写响应更快、效率更高的程序。通过使用异步方法，可以在执行期间暂停和恢复，以允许执行其他任务，而不会阻塞当前线程。
 await 关键字可以等待异步操作的完成，并在操作完成后继续执行其他代码。
+
+# 三、补充——EFCore中使用Async
+
+EF Core 为所有执行 I/O 的同步方法提供异步对应方法。async这些与同步方法具有相同的效果，并且可以与 C#和关键字一起使用await。
+
+PersonDateProvider中
+
+```
+  public async Task<int> CreatAsync(Person person)
+    {
+        await _dbContext.People.AddAsync(person).ConfigureAwait(false);
+
+        return await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+    }
+
+    public async Task<int> UpdatePersonAsync(Person person)
+    {
+        _dbContext.People.Update(person);
+
+        return await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+    }
+
+    public async Task<Person> GetPersonByIdAsync(int id)
+    {
+        return (await _dbContext.People.FindAsync(id).ConfigureAwait(false))!;
+    }
+
+    public async Task<List<Person>> GetPersonAllAsync()
+    {
+        return await _dbContext.People.ToListAsync().ConfigureAwait(false);
+    }
+
+```
+
+ps：FindAsync方法调用之前使用了await关键字，它将等待异步操作的完成，然后返回异步操作的结果。在这种情况下，我们将返回的结果转换为Person类型，并使用感叹号操作符（!）告诉编译器我们确信结果不为空。如果结果为空，则会抛出一个NullReferenceException异常。
+
+PersonService 中
+
+```
+  public async Task<string> AddPersonAsync(Person person)
+  {
+     return await _personDataProvider.CreatAsync(person).ConfigureAwait(false) > 0 ? "数据写入成功" : "数据写入失败";
+  }
+
+  public async Task<List<Person>> GetAllPersonsAsync()
+  {
+     return await _personDataProvider.GetPersonAllAsync().ConfigureAwait(false);
+  }
+
+  public async Task<Person> GetPersonByIdAsync(int id)
+  {
+     return await _personDataProvider.GetPersonByIdAsync(id).ConfigureAwait(false);
+  }
+
+  public async Task<string> UpdatePersonAsync(Person person)
+  {
+     return await _personDataProvider.UpdatePersonAsync(person).ConfigureAwait(false) > 0 ? "更改成功" : "更改失败";
+  }
+```
+
+PeopleController中
+
+```
+[HttpPost]
+[Route("create")]
+public async Task<IActionResult> CreateAsync([FromBody] Person person)
+{
+    var response = await _personService.AddPersonAsync(person).ConfigureAwait(false);
+            
+    return  Ok(response);
+}
+
+[HttpGet]
+public async Task<IActionResult> GetByIdAsync(int id)
+{
+    var response = await _personService.GetPersonByIdAsync(id).ConfigureAwait(false);
+            
+    return Ok(response);
+}
+
+[HttpPost]
+[Route("update")]
+public async Task<IActionResult> UpdateAsync([FromBody] Person person)
+{
+    var response = await _personService.UpdatePersonAsync(person).ConfigureAwait(false);
+
+    return Ok(response);
+}
+
+[HttpGet]
+[Route("all")]
+public async Task<IActionResult> GetAllAsync()
+{
+    var response = await _personService.GetAllPersonsAsync().ConfigureAwait(false);
+            
+    return Ok(response);
+}
+```
