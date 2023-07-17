@@ -28,7 +28,7 @@ async Task DownloadDataAsync()
 官网给出的示例：
 
 ```
- class Program
+    class Program
     {
         static async Task Main(string[] args)
         {
@@ -65,6 +65,7 @@ async Task DownloadDataAsync()
             Console.WriteLine("oj is ready");
             Console.WriteLine("Breakfast is ready!");
         }
+    }
 ```
 
 总之，async 和 await 是 C# 中用于编写异步代码的关键字，可以帮助编写响应更快、效率更高的程序。通过使用异步方法，可以在执行期间暂停和恢复，以允许执行其他任务，而不会阻塞当前线程。
@@ -92,7 +93,7 @@ EF Core 为所有执行 I/O 的同步方法提供异步对应方法。async这�
 PersonDateProvider中
 
 ```
-  public async Task<int> CreatAsync(Person person)
+    public async Task<int> CreatAsync(Person person)
     {
         await _dbContext.People.AddAsync(person).ConfigureAwait(false);
 
