@@ -37,19 +37,19 @@ async Task DownloadDataAsync()
 
 在等待响应结果的过程中，异步方法会暂停执行，并允许其他任务继续执行。当响应结果返回后，使用 await 关键字读取响应结果并将数据保存到文件中。
 
-* 官网给出的示例：
+# 1.官网给出的示例：
 
 假设现在需要做早餐，有以下的六个流程。
 
 1.倒一杯咖啡。2.热锅，然后煎两个鸡蛋。3.煎三片培根。4.烤两片面包。5.在吐司中加入黄油和果酱。6.倒入一杯橙汁。
 
-# 1.同步的流程：
+## （1）同步的流程：
 
 ![image.png](https://upload-images.jianshu.io/upload_images/29177961-7b0daf463557ad03.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 使用同步准备的早餐大约花了30分钟，因为总时间是每个任务时间的总和。计算机会阻塞每个语句，直到一个工作完成，然后再继续执行下一个语句。这就造成了一顿令人不满意的早餐。直到前面的任务完成后，后面的任务才会开始。准备早餐需要更长的时间，而且有些食物在上菜之前就已经冷了。
 
-# 2.而使用异步，不会阻塞任务，而是等待任务
+# （2）而使用异步，不会阻塞任务，而是等待任务
 
 ```
 static async Task Main(string[] args)
@@ -76,7 +76,7 @@ static async Task Main(string[] args)
 
 为了让线程在任务运行时不会阻塞。await关键字提供了一种非阻塞方式来启动任务。这段代码中，每个异步操作都是依次执行的。在执行完一个异步操作后，才会执行下一个异步操作。例如，先执行 FryEggsAsync 方法，等待其完成后再执行 FryBaconAsync 方法，再等待其完成后再执行 ToastBreadAsync 方法。这种方式可以保证异步操作的执行顺序，但可能会增加等待时间，降低程序的效率。
 
-# 3.那如何才能节省时间，来完成早餐呢？我们可以选择同时启动任务
+# （3）那如何才能节省时间，来完成早餐呢？我们可以选择同时启动任务
 
 将以上代码修改为:
 
@@ -153,7 +153,7 @@ static async Task Main(string[] args)
 
 所以可以通过将操作分离到返回任务的新方法中来组合任务。您可以选择何时等待该任务，选择同时启动其他任务。
 
-# 4.Await tasks efficiently
+# （4）Await tasks efficiently
 
 *  `await`可以使用类的方法来改进前面代码末尾的一系列语句`Task`。其中一个 API 是[WhenAll]，它返回一个“任务”，当其参数列表中的所有任务都完成时，该任务完成，
    如以下代码所示：
@@ -213,23 +213,7 @@ while (breakfastTasks.Count > 0)
 
 总之，通过使用异步方法，可以在执行期间暂停和恢复，以允许执行其他任务，而不会阻塞当前线程。await 关键字可以等待异步操作的完成，并在操作完成后继续执行其他代码。
 
-
-# 三、异步方法中发生了些什么？
-
-异步方法中，控制流是如何移动的呢？
-![image.png](https://upload-images.jianshu.io/upload_images/29177961-49652ed37c601df2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-
-具体来说，当GetUrlContentLengthAsync方法调用GetStringAsync方法时，GetStringAsync方法会启动一个异步操作来获取指定URL的内容，并立即返回一个Task<string>对象。此时，GetUrlContentLengthAsync方法将控制权返回给调用方，同时异步操作在后台继续运行。
-
-接着，GetUrlContentLengthAsync方法调用DoIndependentWork方法，该方法输出一条消息，但与异步操作无关。在DoIndependentWork方法执行完毕后，控制流重新回到GetUrlContentLengthAsync方法。
-
-此时，由于GetStringAsync方法仍在后台执行，因此GetUrlContentLengthAsync方法会继续执行下一行代码，即使用await关键字等待异步操作完成。在等待过程中，控制流会暂时离开GetUrlContentLengthAsync方法，并返回调用方，直到异步操作完成并返回结果。
-
-当异步操作完成后，控制流会回到GetUrlContentLengthAsync方法，并将结果存储在contents变量中。随后，GetUrlContentLengthAsync方法返回contents字符串的长度作为一个int值。
-
-总之，通过使用异步方法，可以在执行期间暂停和恢复，以允许执行其他任务，而不会阻塞当前线程。await 关键字可以等待异步操作的完成，并在操作完成后继续执行其他代码。
-
-# 四、补充——EFCore中使用Async
+# 五、补充——EFCore中使用Async
 
 EF Core 为所有执行 I/O 的同步方法提供异步对应方法。async这些与同步方法具有相同的效果，并且可以与 C#和关键字一起使用await。
 
