@@ -4,7 +4,7 @@
 
 mediator扮演着协调者和调度者的角色，它负责处理对象之间的通信和协作，从而达到解耦的目的。
 
-# 二、mediator与mvc
+# 二、mediator与三层架构
 
 mediator在mvc中的作用：controller层可以不用直接和services层做"交流",它不再需要引入其他类，也不再需要理解如何调用这些类，它只需要引入一个mediator，让它把你的请求发到去目的地，目的地也会把对应的结果发回来。
 
@@ -16,10 +16,10 @@ mediator在mvc中的作用：controller层可以不用直接和services层做"�
 Mediator的工作原理是它注册了Handler和信息（Message）之间的绑定，因此当他收到特定信息时就会在它的注册表里找出对应的Handler从而调用。
 
 那么，mediator具体是怎么实现寻找到对应的handler的呢？
-首先我们会在controller使用SendAsync(command)/RequestAsync(request)/PublishAsync(event)，（他们都使用了SendMessage来判断传来的IMessage是属于command/request/event中的哪一种类型）
+首先我们会在controller使用SendAsync(command)/RequestAsync(request)，（他们都使用了SendMessage来判断传来的IMessage是属于command/request/event中的哪一种类型）
 随后选择到对应的管道，寻找到对应的handler，最后handle执行的任务
 
-即：假设我们传递的是SendAsync(command). （ps:虽然说我们现在限定了它是一个command,但其实这个command只是IMessage中的一种，还是需要通过SendMessage来判断这个iMessage是属于command/request/event哪一个）；
+即：假设我们传递的是SendAsync(command). （ps:虽然说我们现在限定了它是一个command,但其实这个command只是IMessage中的一种，还是需要通过SendMessage在生成传参实例的时候去判断这个iMessage是属于command/request/event哪一个）；
 通过SendMessage才能判断好SendAsync（command）是一个command
 那么mediator就可以选择对应的commandHandler去handle处理这个command；
 
@@ -55,18 +55,35 @@ public class CreatePeopleResponse : IResponse
 随后进入到对应的管道，寻找到对应的CreatePeopleCommandHandler，在这里面调用Handle方法来调用了 _personService 的 AddPersonAsync 方法
 
 ```
-public class CreatePeopleCommandHandler : ICommandHandler<CreatePeopleCommand, CreatePeopleResponse>
+public async Task<CreatePeopleResponse> Handle(IReceiveContext<CreatePeopleCommand> context, CancellationToken cancellationToken)
 {
-    private readonly IPersonService _personService;
+    var @event = await _personService.AddPersonAsync(context.Message, cancellationToken).ConfigureAwait(false);
+    
+    await context.PublishAsync(@event, cancellationToken).ConfigureAwait(false);
 
-    public CreatePeopleCommandHandler(IPersonService personService)
+    return new CreatePeopleResponse
     {
-        _personService = personService;
-    }
+        result = @event.result
+    };
+}
+```
 
-    public async Task<CreatePeopleResponse> Handle(IReceiveContext<CreatePeopleCommand> context, CancellationToken cancellationToken)
+上面的`CommandHandler`中的主要功能实现后会生成一个事件，并通过`PublishAsync`通知到对应的 `EventHandler`去做后续的处理
+
+```
+public class PeopleCreatedEvent : IEvent
+{
+    public string result { get; set; }
+}
+```
+
+```
+public class PeopleCreatedEventHandler : IEventHandler<PeopleCreatedEvent>
+{
+    public async Task Handle(IReceiveContext<PeopleCreatedEvent> context, CancellationToken cancellationToken)
     {
-        return await _personService.AddPersonAsync(context.Message, cancellationToken).ConfigureAwait(false);
+        // 或者说是其他处理逻辑
+        await Task.CompletedTask;
     }
 }
 ```
@@ -74,24 +91,24 @@ public class CreatePeopleCommandHandler : ICommandHandler<CreatePeopleCommand, C
 PersonService中调用PersonDataProvider的CreatAsync方法
 
 ```
-  public async Task<CreatePeopleResponse> AddPersonAsync(CreatePeopleCommand command, CancellationToken cancellationToken)
-        {
-            return new CreatePeopleResponse
-            {
-                result = await _personDataProvider.CreatAsync(command.person, cancellationToken).ConfigureAwait(false) > 0
-                    ? "数据写入成功"
-                    : "数据写入失败"
-            };
-        }
+public async Task<PeopleCreatedEvent> AddPersonAsync(CreatePeopleCommand command, CancellationToken cancellationToken)
+{
+    return new PeopleCreatedEvent
+    {
+        result = await _personDataProvider.CreatAsync(command.person, cancellationToken).ConfigureAwait(false) > 0
+            ? "数据写入成功"
+            : "数据写入失败"
+    };
+}
 ```
 
 在PersonDataProvider中去AddAsync
 
 ```
-  public async Task<int> CreatAsync(Person person, CancellationToken cancellationToken)
-    {
-        await _dbContext.People.AddAsync(person, cancellationToken).ConfigureAwait(false);
+public async Task<int> CreatAsync(Person person, CancellationToken cancellationToken)
+{
+    await _dbContext.People.AddAsync(person, cancellationToken).ConfigureAwait(false);
 
-        return await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-    }
+    return await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+}
 ```
