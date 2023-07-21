@@ -114,3 +114,6 @@ public class SmartFaqService : ISmartFaqService
 ```
 
 通过问题列表转换为DTO对象列表，就可以把数据库查到的数据转换为前段可以使用的对象啦🎉
+
+
+![转换结果](https://github.com/DOGGIE4/desktop-tutorial/assets/138757021/faec8605-8d0b-4bc4-8098-5f6e6f9c77ab)
