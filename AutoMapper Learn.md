@@ -47,34 +47,59 @@ public class SmartFaqMapping : Profile
 
 ## 2. 使用映射器对象执行映射
 
-先注入一个IMapper的对象，用于执行对象映射操作。这个 IMapper 对象将 UserQuestion 对象映射到 UserQuestionDto 对象。
-在 Handle 方法中，创建了一个 UserQuestion 对象，使用 _mapper 对象将其映射到 UserQuestionDto 对象。
+Handler中
 
 ```
 public class GetUserQuestionsForReviewRequestHandler : IRequestHandler<GetUserQuestionsForReviewRequest, GetUserQuestionsForReviewResponse>
 {
+    private readonly ISmartFaqService _smartFaqService;
+
+    public GetUserQuestionsForReviewRequestHandler(ISmartFaqService smartFaqService)
+    {
+        _smartFaqService = smartFaqService;
+    }
+    
+    public async Task<GetUserQuestionsForReviewResponse> Handle(IReceiveContext<GetUserQuestionsForReviewRequest> context, CancellationToken cancellationToken)
+    {
+       return await _smartFaqService.GetUserQuestionsForReviewResponseAsync(context.Message, cancellationToken).ConfigureAwait(false);
+    }
+}
+```
+
+Service层
+先注入一个IMapper的对象，用于执行对象映射操作。这个 IMapper 对象将 UserQuestion 对象映射到 UserQuestionDto 对象。
+在 Handle 方法中，创建了一个 UserQuestion 对象，使用 _mapper 对象将其映射到 UserQuestionDto 对象。
+
+```
+public class SmartFaqService : ISmartFaqService
+{
     private readonly IMapper _mapper;
 
-    public GetUserQuestionsForReviewRequestHandler(IMapper mapper)
+    public SmartFaqService(IMapper mapper)
     {
         _mapper = mapper;
     }
 
-    public async Task<GetUserQuestionsForReviewResponse> Handle(
-        IReceiveContext<GetUserQuestionsForReviewRequest> context, CancellationToken cancellationToken)
-    {
-        var userQuestion = new UserQuestion()
+    public async Task<GetUserQuestionsForReviewResponse> GetUserQuestionsForReviewResponseAsync(
+        GetUserQuestionsForReviewRequest response,
+        CancellationToken cancellationToken)
         {
-            Id = 1,
-            AskBy = "AskBy",
-            Question = "question",
-            RasaPredictedQid = 10
-        };
+            {
+           
+                var userQuestion = new UserQuestion()
+                {
+                    Id = 1,
+                    AskBy = "AskBy",
+                    Question = "question",
+                    RasaPredictedQid = 10
+                };
 
-        var userQuestionDto = _mapper.Map<UserQuestionDto>(userQuestion);
+                var userQuestionDto = _mapper.Map<UserQuestionDto>(userQuestion);
 
-        return new GetUserQuestionsForReviewResponse();
-    }
+                return new GetUserQuestionsForReviewResponse();
+            }
+        }
 }
 ```
+
 通过问题列表转换为DTO对象列表，就可以把数据库查到的数据转换为前段可以使用的对象啦🎉
