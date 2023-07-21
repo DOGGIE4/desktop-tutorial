@@ -38,7 +38,7 @@ public async Task<IActionResult> CreateAsync([FromBody] CreatePeopleCommand comm
 }
 ```
 
-CreatPeopleCommand中，ICommand和IResponse都是通过调用IMessage来判断CreatPeopleCommand是一个Command；CreatePeopleResponse是一个Response
+CreatPeopleCommand中，ICommand和IResponse都是通过调用SendMessage来判断CreatPeopleCommand是一个Command；CreatePeopleResponse是一个Response
 
 ```
 public class CreatePeopleCommand : ICommand
