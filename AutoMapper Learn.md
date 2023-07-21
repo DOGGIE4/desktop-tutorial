@@ -67,6 +67,7 @@ public class GetUserQuestionsForReviewRequestHandler : IRequestHandler<GetUserQu
 ```
 
 Service层
+
 先注入一个IMapper的对象，用于执行对象映射操作。这个 IMapper 对象将 UserQuestion 对象映射到 UserQuestionDto 对象。
 在 Handle 方法中，创建了一个 UserQuestion 对象，使用 _mapper 对象将其映射到 UserQuestionDto 对象。
 
