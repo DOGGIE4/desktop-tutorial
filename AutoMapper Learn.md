@@ -31,7 +31,16 @@ public static TTarget Map<TSource, TTarget>(TSource source, TTarget target)
 
 # 三、AutoMapper的使用
 
-## 1.先创建映射规则
+## 1. Nuget安装AutoMapper并在Autofac中注册
+
+```
+private void RegisterAutoMapper(ContainerBuilder builder)
+{
+    builder.RegisterAutoMapper(typeof(PractiseForLizzieModule).Assembly);
+}
+```
+
+## 2. 先创建映射规则
 
 创建一个继承自 Profile 的类 SmartFaqMapping，并在构造函数中通过 CreateMap 方法定义了一个从 UserQuestion 到 UserQuestionDto 的映射规则。
 
@@ -45,7 +54,7 @@ public class SmartFaqMapping : Profile
 }
 ```
 
-## 2. 使用映射器对象执行映射
+## 3. 使用映射器对象执行映射
 
 Handler中
 
@@ -82,11 +91,9 @@ public class SmartFaqService : ISmartFaqService
     }
 
     public async Task<GetUserQuestionsForReviewResponse> GetUserQuestionsForReviewResponseAsync(
-        GetUserQuestionsForReviewRequest response,
-        CancellationToken cancellationToken)
+        GetUserQuestionsForReviewRequest response, CancellationToken cancellationToken)
         {
             {
-           
                 var userQuestion = new UserQuestion()
                 {
                     Id = 1,
@@ -97,7 +104,10 @@ public class SmartFaqService : ISmartFaqService
 
                 var userQuestionDto = _mapper.Map<UserQuestionDto>(userQuestion);
 
-                return new GetUserQuestionsForReviewResponse();
+                return new GetUserQuestionsForReviewResponse
+                {
+                    UserQuestions = new List<UserQuestionDto>{ userQuestionDto }
+                };
             }
         }
 }
