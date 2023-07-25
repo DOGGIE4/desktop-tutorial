@@ -82,7 +82,7 @@ public class SmartFaqService : ISmartFaqService
     }
 
     public async Task<GetUserQuestionsForReviewResponse> GetUserQuestionsForReviewResponseAsync(
-        GetUserQuestionsForReviewRequest response,
+        GetUserQuestionsForReviewRequest request,
         CancellationToken cancellationToken)
         {
             {
@@ -103,4 +103,4 @@ public class SmartFaqService : ISmartFaqService
 }
 ```
 
-通过问题列表转换为DTO对象列表，就可以把数据库查到的数据转换为前段可以使用的对象啦🎉
+通过问题列表转换为DTO对象列表，就可以把数据库查到的数据转换为前可以使用的对象啦🎉
