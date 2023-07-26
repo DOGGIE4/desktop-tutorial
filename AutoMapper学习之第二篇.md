@@ -23,19 +23,18 @@ CreateMap<TSource, TDestination>()
 
 ```
 public async Task<GetUserQuestionsForReviewResponse> GetUserQuestionsForReviewResponseAsync(
-        GetUserQuestionsForReviewRequest request, CancellationToken cancellationToken)
+    GetUserQuestionsForReviewRequest request, CancellationToken cancellationToken)
+{
+    var getUseQuestionsQuery = _mapper.Map<GetUseQuestionsQuery>(request);
+
+    var (count, userQuestions) = await _smartFaqDataProvider
+        .GetUserQuestionsAsync(getUseQuestionsQuery, cancellationToken).ConfigureAwait(false);
+
+    return new GetUserQuestionsForReviewResponse
     {
-        var getUseQuestionsQuery = _mapper.Map<GetUseQuestionsQuery>(request);
-
-        var (count, userQuestions) = await _smartFaqDataProvider
-            .GetUserQuestionsAsync(getUseQuestionsQuery, cancellationToken).ConfigureAwait(false);
-
-        return new GetUserQuestionsForReviewResponse
-        {
-            Total = count,
-            Data = userQuestions
-        };
-    }
+        Total = count,
+        Data = userQuestions
+    };
 }
 ```
 
@@ -101,19 +100,19 @@ DTO 是一种简单的数据结构，用于封装数据并传输到其他层。�
 
 ```
  public async Task<GetUserQuestionsForReviewResponse> GetUserQuestionsForReviewResponseAsync(
-        GetUserQuestionsForReviewRequest request, CancellationToken cancellationToken)
- {
-     var getUseQuestionsQuery = _mapper.Map<GetUseQuestionsQuery>(request);
+    GetUserQuestionsForReviewRequest request, CancellationToken cancellationToken)
+{
+    var getUseQuestionsQuery = _mapper.Map<GetUseQuestionsQuery>(request);
 
-     var (count, userQuestions) = await _smartFaqDataProvider
-         .GetUserQuestionsAsync(getUseQuestionsQuery, cancellationToken).ConfigureAwait(false);
+    var (count, userQuestions) = await _smartFaqDataProvider
+        .GetUserQuestionsAsync(getUseQuestionsQuery, cancellationToken).ConfigureAwait(false);
 
-     return new GetUserQuestionsForReviewResponse
-     {
-         TTotal = count,
-         TData = userQuestions
-     };
- }
+    return new GetUserQuestionsForReviewResponse
+    {
+        Total = count,
+        Data = userQuestions
+    };
+}
 ```
 
 GetUserQuestionsForReviewResponse 类中的 Data 属性是一个列表，其中每个元素都是 UserQuestionDto 类型的对象，用于封装用户问题信息并在应用程序的不同层之间传递。
