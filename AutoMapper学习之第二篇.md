@@ -98,6 +98,7 @@ DTO 是一种简单的数据结构，用于封装数据并传输到其他层。�
 ## 举例
 
 使用DTO类UserQuestionDto的集合作为响应对象GetUserQuestionsForReviewResponse的Data属性的类型。
+
 ```
  public async Task<GetUserQuestionsForReviewResponse> GetUserQuestionsForReviewResponseAsync(
         GetUserQuestionsForReviewRequest request, CancellationToken cancellationToken)
