@@ -1,6 +1,8 @@
 # 一、Hangfire是什么？
 
-Hangfire可以帮助在 ASP.NET 或 .NET Core 应用程序中轻松地执行后台任务。Hangfire 提供了一个简单的 API，可以添加、删除和管理后台任务，同时也提供了一个可扩展的插件模型，允许自定义任务调度和执行行为。
+Hangfire可以帮助在 ASP.NET 或 .NET Core 应用程序中轻松地执行后台任务。
+
+Hangfire 提供了一个简单的 API，可以添加、删除和管理后台任务，同时也提供了一个可扩展的插件模型，允许自定义任务调度和执行行为。
 
 # 二、配置
 
@@ -53,6 +55,7 @@ app.UseHangfireDashboard();  //启动hangfire面板
 ![image.png](https://upload-images.jianshu.io/upload_images/29177961-bdb91cc41fb9ac01.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 我们打开如下地址，可以看到hangfire的作业控制面板（在没有开始任何作业的时候，仪表盘是空滴）
+
 ![image.png](https://upload-images.jianshu.io/upload_images/29177961-957ee35a2a51d141.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 # 三、hangfired 使用
@@ -95,14 +98,16 @@ RecurringJob .AddOrUpdate(
 我们在service层的AddPersonAsync中写入
 
 ```
+public async Task<PeopleCreatedEvent> AddPersonAsync(CreatePeopleCommand command, CancellationToken cancellationToken)
+{
 BackgroundJob.Enqueue<IPersonDataProvider>(x => x.CreatAsync(new Person()
-            {
-                Id = 50
-            }, cancellationToken));
-
+{
+    Id = 50
+}, cancellationToken));
 ```
 
 使用 BackgroundJob.Enqueue<IPersonDataProvider> 方法创建一个后台任务，该任务将会调用实现了 IPersonDataProvider 接口的对象的方法。
+
 将一个新的 Person 对象作为参数传递给 CreateAsync 方法，对象的 Id 属性被设置为 50。
 
 send一下
@@ -132,6 +137,7 @@ BackgroundJob.Schedule(() => _personDataProvider.UpdatePersonAsync(person, Cance
 使用 BackgroundJob.Schedule 方调用 _personDataProvider 对象的 UpdatePersonAsync 方法。
 
 将一个 person 对象作为参数传递给 UpdatePersonAsync 方法，该方法将会在任务执行时使用该对象来更新数据存储。
+
 使用 TimeSpan.FromMinutes(1) 方法指定任务的执行时间，该任务将会在一分钟后执行。
 
 再次send一下：
@@ -151,16 +157,16 @@ BackgroundJob.Schedule(() => _personDataProvider.UpdatePersonAsync(person, Cance
 我们在service层的AddPersonAsync中写入
 
 ```
- RecurringJob.AddOrUpdate<IPersonDataProvider>(
-                "createPersonRecurringJob" ,
-                x => x.CreatAsync(new Person()
-                {
-                    Id = 444
-                }, cancellationToken),
-                "0 50 9 29 7 *", new RecurringJobOptions()  //core表达式来定时
-                {
-                    TimeZone = TimeZoneInfo.FindSystemTimeZoneById("China Standard Time")  //使用中国时间
-                });
+RecurringJob.AddOrUpdate<IPersonDataProvider>(
+"createPersonRecurringJob" ,
+x => x.CreatAsync(new Person()
+{
+    Id = 664
+}, cancellationToken),
+"0 13 11 29 7 *", new RecurringJobOptions()
+{
+    TimeZone = TimeZoneInfo.FindSystemTimeZoneById("China Standard Time")
+});
 ```
 
 启动后：我么可以看到周期性作业里就有这条要执行的
@@ -171,11 +177,12 @@ BackgroundJob.Schedule(() => _personDataProvider.UpdatePersonAsync(person, Cance
 
 ![image.png](https://upload-images.jianshu.io/upload_images/29177961-826b18357226f8b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-# 五、有关于core
+# 五、有关于Cron
 
-基本结构
+基本结构是这样滴：
 
 Second Minute Hour Day Month Week Year
+
 举一个最常见的情况，如果我们想要表示 每天0点，就可以这么写 Cron 表达式:  0 0 0 * * ?
 
 Day 和 Month 都填的是星号（*），这个比较好理解，代表全匹配所有的天和月份，但是 Week 这里写的是问号（？），含义是什么呢？
