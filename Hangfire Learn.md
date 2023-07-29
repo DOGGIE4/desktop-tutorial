@@ -64,31 +64,34 @@ app.UseHangfireDashboard();  //启动hangfire面板
 
 主要的三个创建任务的方法：
 
-1.Fire-and-Forget Jobs
+## 1. Fire-and-Forget Jobs
+
 即发即忘作业仅执行一次，并且几乎在创建后立即执行。
 
 ```
-var jobId = BackgroundJob .Enqueue(
-    () => Console .WriteLine( "一劳永逸！" ));
+var jobId = BackgroundJob.Enqueue(
+    () => Console.WriteLine("Fire-and-forget!"));
 ```
 
-2.Delayed Jobs
+## 2. Delayed Jobs
+
 不是马上调用方法，而是设定一个未来时间点再来执行，延迟作业仅执行一次
 
 ```
-var jobId = BackgroundJob .Schedule(
-    () => Console .WriteLine( "延迟！" ),
-     TimeSpan .FromDays(7));
+var jobId = BackgroundJob.Schedule(
+    () => Console.WriteLine("Delayed!"),
+    TimeSpan.FromDays(7));
 ```
 
-3.Recurring Jobs
+## 3. Recurring Jobs
+
 重复作业按照指定的CRON 计划多次触发。
 
 ```
-RecurringJob .AddOrUpdate(
-     "myrecurringjob" ,
-    () => Console .WriteLine( "重复执行！" ),
-     Cron .Daily);
+RecurringJob.AddOrUpdate(
+     "myrecurringjob",
+    () => Console.WriteLine("Recurring!"),
+    Cron.Daily);
 ```
 
 # 四、在项目中使用
@@ -158,7 +161,7 @@ BackgroundJob.Schedule(() => _personDataProvider.UpdatePersonAsync(person, Cance
 
 ```
 RecurringJob.AddOrUpdate<IPersonDataProvider>(
-"createPersonRecurringJob" ,
+"createPersonRecurringJob",
 x => x.CreatAsync(new Person()
 {
     Id = 664
@@ -181,7 +184,7 @@ x => x.CreatAsync(new Person()
 
 基本结构是这样滴：
 
-Second Minute Hour Day Month Week Year
+* Second Minute Hour Day Month Week Year
 
 举一个最常见的情况，如果我们想要表示 每天0点，就可以这么写 Cron 表达式:  0 0 0 * * ?
 
