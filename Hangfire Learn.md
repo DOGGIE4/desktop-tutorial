@@ -89,7 +89,7 @@ var jobId = BackgroundJob.Schedule(
 
 ```
 RecurringJob.AddOrUpdate(
-     "myrecurringjob",
+    "myrecurringjob",
     () => Console.WriteLine("Recurring!"),
     Cron.Daily);
 ```
@@ -103,10 +103,11 @@ RecurringJob.AddOrUpdate(
 ```
 public async Task<PeopleCreatedEvent> AddPersonAsync(CreatePeopleCommand command, CancellationToken cancellationToken)
 {
-BackgroundJob.Enqueue<IPersonDataProvider>(x => x.CreatAsync(new Person()
-{
-    Id = 50
-}, cancellationToken));
+    BackgroundJob.Enqueue<IPersonDataProvider>(x => x.CreatAsync(new Person()
+    {
+        Id = 50
+    }, cancellationToken));
+}
 ```
 
 使用 BackgroundJob.Enqueue<IPersonDataProvider> 方法创建一个后台任务，该任务将会调用实现了 IPersonDataProvider 接口的对象的方法。
@@ -161,15 +162,15 @@ BackgroundJob.Schedule(() => _personDataProvider.UpdatePersonAsync(person, Cance
 
 ```
 RecurringJob.AddOrUpdate<IPersonDataProvider>(
-"createPersonRecurringJob",
-x => x.CreatAsync(new Person()
-{
-    Id = 664
-}, cancellationToken),
-"0 13 11 29 7 *", new RecurringJobOptions()
-{
-    TimeZone = TimeZoneInfo.FindSystemTimeZoneById("China Standard Time")
-});
+    "createPersonRecurringJob",
+    x => x.CreatAsync(new Person()
+    {
+        Id = 664
+    }, cancellationToken),
+    "0 13 11 29 7 *", new RecurringJobOptions()
+    {
+        TimeZone = TimeZoneInfo.FindSystemTimeZoneById("China Standard Time")
+    });
 ```
 
 启动后：我么可以看到周期性作业里就有这条要执行的
