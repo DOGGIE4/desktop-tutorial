@@ -15,15 +15,18 @@ MQ全称为Message Queue，即消息队列，消息队列是应用程序与应�
 
 如下图有一个订单系统直接调用库存系统，支付系统，物流系统
 
-![image](//upload-images.jianshu.io/upload_images/24133009-977a7cb5f61b8665?imageMogr2/auto-orient/strip|imageView2/2/w/611/format/webp)
+![image.png](https://upload-images.jianshu.io/upload_images/29177961-c3db14c298f9a361.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 由于订单系统与库存系统是耦合的，如果库存系统出现了错误，可能也会影响订单系统不能工作
 
-![image](//upload-images.jianshu.io/upload_images/24133009-3f83048bbe7f763e.png?imageMogr2/auto-orient/strip|imageView2/2/w/572/format/webp)
+![image.png](https://upload-images.jianshu.io/upload_images/29177961-b793338e4e3879bb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 如果要新接入一个系统我们还要改变订单系统的源码，并添加一系列代码来实现调用
 
-![image](//upload-images.jianshu.io/upload_images/24133009-ca58389da0c84a32?imageMogr2/auto-orient/strip|imageView2/2/w/632/format/webp)
+![image.png](https://upload-images.jianshu.io/upload_images/29177961-e33975123d8fc3df.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 这就暴露了一个巨大的缺点，系统的耦合性越高，容错性就越低，可维护性就越低
 
@@ -31,15 +34,18 @@ MQ全称为Message Queue，即消息队列，消息队列是应用程序与应�
 
 订单系统只要将对应的数据发送到MQ即可，而库存系统，支付系统，物流系统只需MQ中取出对应的数据即可
 
-![image](//upload-images.jianshu.io/upload_images/24133009-ccc0aa8dbd498529?imageMogr2/auto-orient/strip|imageView2/2/w/652/format/webp)
+![image.png](https://upload-images.jianshu.io/upload_images/29177961-fe4503e724c07383.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 如果库存系统出现了错误，也不会影响到订单系统，比如库存系统由于访问量过大突然卡了几秒钟，几秒钟之后可能就好了，好了之后再到MQ中取出对应的数据即可
 
-![image](//upload-images.jianshu.io/upload_images/24133009-222f744f02602086?imageMogr2/auto-orient/strip|imageView2/2/w/632/format/webp)
+![image.png](https://upload-images.jianshu.io/upload_images/29177961-5dc1912dcc7d6d9a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 比如我们要接入一个系统，我们不需要再修改订单系统的源码，直接让该系统去MQ中取出对应的数据即可
 
-![image](//upload-images.jianshu.io/upload_images/24133009-ba08c74e0946f749?imageMogr2/auto-orient/strip|imageView2/2/w/670/format/webp)
+![image.png](https://upload-images.jianshu.io/upload_images/29177961-a06db1b929cee00d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 ## 2. 异步
 
@@ -47,13 +53,15 @@ MQ全称为Message Queue，即消息队列，消息队列是应用程序与应�
 
 有一个订单系统如图
 
-![image](//upload-images.jianshu.io/upload_images/24133009-7fc23a1a28f29c9b?imageMogr2/auto-orient/strip|imageView2/2/w/552/format/webp)
+![image.png](https://upload-images.jianshu.io/upload_images/29177961-d7f04c803f25e91a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 用户下订单一共需要300+300+300+20=920ms，订单系统需要一一调用数据库，库存，支付，物流系统，耗时极大
 
 ####  使用MQ之后
 
-![image](//upload-images.jianshu.io/upload_images/24133009-6e08c97ffd74fd08?imageMogr2/auto-orient/strip|imageView2/2/w/632/format/webp)
+![image.png](https://upload-images.jianshu.io/upload_images/29177961-2b1bf0da11003c24.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 用户下订单需要20+5=25ms
 
@@ -68,5 +76,5 @@ MQ全称为Message Queue，即消息队列，消息队列是应用程序与应�
 
 ![image](https://upload-images.jianshu.io/upload_images/24133009-d2e0d0197a778692?imageMogr2/auto-orient/strip|imageView2/2/w/1069/format/webp)
 
-原文：https://www.zhihu.com/question/54152397
+原文：https://www.jianshu.com/p/8a50d1e51e09
 
