@@ -7,7 +7,7 @@ TKey 表示键的类型，TValue 表示值的类型。
 
 ```
 // 创建字典
-Dictionary<string, int> ages = new Dictionary<string, int>();
+var ages = new Dictionary<string, int>();
 
 ```
 
