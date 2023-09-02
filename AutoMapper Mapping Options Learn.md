@@ -104,5 +104,3 @@ ConvertUsing(src => new Destination(src.Property), opts => opts.MapFrom(src => s
 ```
 IncludeMembers(src => src.OtherMember)
 ```
-
-这些是一些常见的高级选项和方法，用于处理更复杂的映射需求。AutoMapper 还提供了其他选项和方法，如自定义解析器、前后转换器、条件筛选器等，以满足不同的映射场景和需求。你可以根据具体情况选择适合的选项和方法来处理复杂的映射需求。
