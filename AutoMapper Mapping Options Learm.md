@@ -15,6 +15,15 @@ CreateMap<Source, Destination>();
 ```
 ForMember(dest => dest.Property, opt => opt.MapFrom(src => src.OtherProperty));
 ```
+例如：
+
+```
+CreateMap<StaffHierarchyDto, WorkWeChatDepartmentDto>()
+    .ForMember(x => x.Id, opt => opt.MapFrom(src => src.Id))
+    .ForMember(x => x.ParentId, opt => opt.MapFrom(src => src.SuperiorId))
+```
+
+将StaffHierarchyDto对象的Id属性的值映射到WorkWeChatDepartmentDto对象的Id属性上，ParentId映射到SuperiorId上
 
 3.Ignore()：
 
