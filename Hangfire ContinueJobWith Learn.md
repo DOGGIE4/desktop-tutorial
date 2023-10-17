@@ -6,17 +6,17 @@
 在写下载的方法时，学到了一个新的方式
 
 ```
-  private void DownloadWorkWeChatMeetingRecords(List<TencentMeetingRecord> records)
-    {
-        if (records.Count <= 0) return;
-        
-        var parentJobId = _postBoyBackgroundJobClient.Enqueue(() => _weChatService.GetDownloadAddressAndDownloadFilesAsync(
-            records.First(), CancellationToken.None), HangfireQueues.InternalHostingDownloadMeetingFilesQueue);
-                    
-        records.Skip(1).Aggregate(parentJobId, (current, record) =>
-            _postBoyBackgroundJobClient.ContinueJobWith(current, () => _weChatService.GetDownloadAddressAndDownloadFilesAsync(
-                record, CancellationToken.None), HangfireQueues.InternalHostingDownloadMeetingFilesQueue));
-    }
+ private void DownloadWorkWeChatMeetingRecords(List<TencentMeetingRecord> records)
+{
+    if (records.Count <= 0) return;
+    
+    var parentJobId = _postBoyBackgroundJobClient.Enqueue(() => _weChatService.GetDownloadAddressAndDownloadFilesAsync(
+        records.First(), CancellationToken.None), HangfireQueues.InternalHostingDownloadMeetingFilesQueue);
+                
+    records.Skip(1).Aggregate(parentJobId, (current, record) =>
+        _postBoyBackgroundJobClient.ContinueJobWith(current, () => _weChatService.GetDownloadAddressAndDownloadFilesAsync(
+            record, CancellationToken.None), HangfireQueues.InternalHostingDownloadMeetingFilesQueue));
+}
 ```
 
 在给定的代码中，第一条 job 完成后，它会被跳过（通过 .Skip(1)）
