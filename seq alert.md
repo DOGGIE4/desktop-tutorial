@@ -32,3 +32,9 @@ step3:
 ![image.png](https://upload-images.jianshu.io/upload_images/29177961-26e0712f2bc1ed2e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 初次打开这个服务状态是关闭的，去开启的时候需要验证，验证成功之后就会生成一串密码了，然后把这个密码填到add instance时，Password那一栏
+
+ps：这个接收者的邮箱是可以填好多个的，用逗号隔开就好
+
+# 三：Alerts
+![image.png](https://upload-images.jianshu.io/upload_images/29177961-db6cb0a9c23628f8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![image.png](https://upload-images.jianshu.io/upload_images/29177961-229041035f9d8010.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
